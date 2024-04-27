@@ -5,13 +5,13 @@
 1. **Clone the Repository:**
 
    ```
-   git clone https://github.com/your-repo/your-project.git
+   git clone https://github.com/InnoTech-Titans/ultimate_pdf_toolkit.git
    ```
 
 2. **Navigate to the Project Directory:**
 
    ```
-   cd your-project
+   cd ultimate_pdf_toolkit
    ```
 
 3. **Create Required Directories:**
