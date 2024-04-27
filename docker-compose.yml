@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  anythingllm:
+    image: mintplexlabs/anythingllm
+    ports:
+      - 3001:3001
+    cap_add:
+      - SYS_ADMIN
+    restart: always
+    volumes:
+      - ./cache:/app/server/storage
+      - ./cache/.env:/app/server/.env
+    environment:
+      - STORAGE_DIR=/app/server/storage
+    depends_on:
+      - vectordb
+      - ollama
+    networks:
+      - my_network
+
+  vectordb:
+    image: qdrant/qdrant
+    restart: always
+    volumes:
+      - ./db-cache:/qdrant/storage:z
+    networks:
+      - my_network
+
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ./ollama:/root/.ollama
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - "gpu"
+    networks:
+      - my_network
+
+  stirling:
+    image: frooodle/s-pdf:latest
+    ports:
+      - 8081:8080
+    volumes:
+      - ./pdf/trainingData:/usr/share/tesseract-ocr/5/tessdata
+      - ./pdf/extraConfigs:/configs
+      - ./pdf/logs:/logs
+    environment:
+      - DOCKER_ENABLE_SECURITY=false
+    networks:
+      - my_network
+      
+networks:
+  my_network:
+    driver: bridge
